@@ -6,6 +6,7 @@ import axios from "axios"
 class App extends React.Component {
 
   state = {
+    userText:"alexismarroquin7",
     user: {},
     followers: []
   }
@@ -13,7 +14,7 @@ class App extends React.Component {
   componentDidMount(){
     console.log("App: Component Mounted")
     axios
-    .get(`https://api.github.com/users/alexismarroquin7`)
+    .get(`https://api.github.com/users/${this.state.userText}`)
     .then(res => {
       this.setState({
         user: res.data
@@ -23,24 +24,54 @@ class App extends React.Component {
       console.log(err)
     })
     axios
-    .get(`https://api.github.com/users/Ladrillo/followers`)
+    .get(`https://api.github.com/users/${this.state.userText}/followers`)
     .then(res => {
       this.setState({
         followers: res.data
       })
-      console.log(this.state.followers)
     })
     .catch(err => {
       console.log(err)
     })
+  }
 
+  componentDidUpdate(prevProps, prevState){
+    if(prevState.userText !== this.state.userText){
+      axios
+      .get(`https://api.github.com/users/${this.state.userText}`)
+      .then(res => {
+        this.setState({
+          user: res.data
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      axios
+      .get(`https://api.github.com/users/${this.state.userText}/followers`)
+      .then(res => {
+        this.setState({
+          followers: res.data
+        })
+      })
+      .catch(err => {
+        console.log(err)
+      })
+    }
+  }
+
+  searchUser = text => {
+    console.log("App: text:", text)
+    this.setState({
+      userText: text
+    })
   }
 
   render(){
     return (
     <div className="App">
 
-      {/* {console.log(this.state.user)} */}
+      <Form searchUser={this.searchUser} userText={this.state.userText}/>
       {
         this.state.users === {}
         ? <h1>loading...</h1>
@@ -51,6 +82,7 @@ class App extends React.Component {
         ? <h1>loading...</h1>
         : <Card followers={this.state.followers}/>
       }
+      {this.state.followers.length === 0 && <h2>No followers yet...</h2>}
     </div>
     );
   }

@@ -4,16 +4,15 @@ import Followers from "./Followers"
 class Card extends React.Component {
 
     componentDidUpdate(){
-        console.log("Card: props:", this.props.user);
+        // console.log("Card: props:", this.props.user);
     }
     
     render(){
         return (
         <div>
-        
         {this.props.user &&
         <div>
-            <h2>User Card</h2>
+            <h2>User</h2>
             <div>
                 <img alt={this.props.user.login} src={this.props.user.avatar_url} />
             </div>
@@ -26,7 +25,7 @@ class Card extends React.Component {
             <p>Following: {this.props.user.following}</p>
         </div>}
         {
-            this.props.followers && 
+            this.props.followers &&
             this.props.followers.map(follower => {
                 return <Followers follower={follower} />
             })
